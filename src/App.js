@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Portfolio from './Portfolio';
@@ -9,15 +8,15 @@ class App extends Component {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        this.mount.appendChild(renderer.domElement);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
+        this.mount.appendChild(renderer.domElement);
         const controls = new OrbitControls(camera, renderer.domElement);
 
+        const textureLoader = new THREE.TextureLoader();
 
-        const moonTexture = new THREE.TextureLoader().load('./img/moon.jpg');
-        const normalTexture = new THREE.TextureLoader().load('./img/normal.jpg');
+        const moonTexture = textureLoader.load('./img/moon.jpg');
+        const normalTexture = textureLoader.load('./img/normal.jpg');
         const moon = new THREE.Mesh(
             new THREE.SphereGeometry(3, 32, 32),
             new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: normalTexture })
@@ -26,7 +25,7 @@ class App extends Component {
         moon.position.y = 0;
         scene.add(moon);
 
-        const earthTexture = new THREE.TextureLoader().load('./img/earth.jpg');
+        const earthTexture = textureLoader.load('./img/earth.jpg');
         const earth = new THREE.Mesh(
             new THREE.SphereGeometry(12, 32, 32),
             new THREE.MeshStandardMaterial({ map: earthTexture})
@@ -36,7 +35,7 @@ class App extends Component {
         earth.position.z = -10;
         scene.add(earth);
 
-        const marsTexture = new THREE.TextureLoader().load('./img/mars.jpg');
+        const marsTexture = textureLoader.load('./img/mars.jpg');
         const mars = new THREE.Mesh(
             new THREE.SphereGeometry(13, 60, 60),
             new THREE.MeshStandardMaterial({ map: marsTexture})
@@ -51,20 +50,22 @@ class App extends Component {
         scene.add(light);
         camera.position.z = 50;
 
-        function addStar() {
-            const geomerty = new THREE.SphereGeometry(0.2, 30, 30);
-            const material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-            const star = new THREE.Mesh(geomerty, material);
-
+        // 별 300개를 InstancedMesh 하나로 그려 draw call 을 1회로 줄임
+        const starCount = 300;
+        const stars = new THREE.InstancedMesh(
+            new THREE.SphereGeometry(0.2, 8, 8),
+            new THREE.MeshStandardMaterial({ color: 0xFFFFFF }),
+            starCount
+        );
+        const matrix = new THREE.Matrix4();
+        for (let i = 0; i < starCount; i++) {
             const [x, y, z] = new Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200));
-
-            star.position.set(x, y, z);
-            scene.add(star);
+            matrix.makeTranslation(x, y, z);
+            stars.setMatrixAt(i, matrix);
         }
+        scene.add(stars);
 
-        Array(300).fill().forEach(addStar);
-
-        const spaceTexture = new THREE.TextureLoader().load('./img/space.jpg');
+        const spaceTexture = textureLoader.load('./img/space.jpg');
         scene.background = spaceTexture;
 
         function moveCamera() {
@@ -75,11 +76,19 @@ class App extends Component {
             camera.rotation.y = t * -0.0002;
         }
 
-        document.body.onscroll = moveCamera;
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('scroll', moveCamera);
+        window.addEventListener('resize', onResize);
         moveCamera();
 
+        let frameId;
         const animate = function () {
-            requestAnimationFrame(animate);
+            frameId = requestAnimationFrame(animate);
             // moon.rotation.x += 0.01;
             moon.rotation.y += 0.05;
             moon.rotation.z += 0.01;
@@ -91,6 +100,23 @@ class App extends Component {
             renderer.render(scene, camera);
         };
         animate();
+
+        this.cleanup = () => {
+            cancelAnimationFrame(frameId);
+            window.removeEventListener('scroll', moveCamera);
+            window.removeEventListener('resize', onResize);
+            controls.dispose();
+            scene.traverse(obj => {
+                if (obj.geometry) obj.geometry.dispose();
+                if (obj.material) obj.material.dispose();
+            });
+            [moonTexture, normalTexture, earthTexture, marsTexture, spaceTexture].forEach(texture => texture.dispose());
+            renderer.dispose();
+            renderer.domElement.remove();
+        };
+    }
+    componentWillUnmount() {
+        this.cleanup();
     }
     render() {
         return (
@@ -101,6 +127,4 @@ class App extends Component {
         )
     }
 }
-const rootElement = document.getElementById("root")
-ReactDOM.render(<App />, rootElement);
 export default App;
