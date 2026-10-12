@@ -18,16 +18,6 @@ class App extends Component {
 
         const textureLoader = new THREE.TextureLoader();
 
-        const moonTexture = textureLoader.load('./img/moon.jpg');
-        const normalTexture = textureLoader.load('./img/normal.jpg');
-        const moon = new THREE.Mesh(
-            new THREE.SphereGeometry(3, 32, 32),
-            new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: normalTexture })
-        )
-        moon.position.x = 40;
-        moon.position.y = 0;
-        scene.add(moon);
-
         const earthTexture = textureLoader.load('./img/earth.jpg');
         const earth = new THREE.Mesh(
             new THREE.SphereGeometry(12, 32, 32),
@@ -37,6 +27,20 @@ class App extends Component {
         earth.position.y = 15;
         earth.position.z = -10;
         scene.add(earth);
+
+        // 지구 중심에 공전 축을 두고, 축을 회전시켜 달이 지구 주위를 돌게 함
+        const moonOrbit = new THREE.Object3D();
+        moonOrbit.position.copy(earth.position);
+        scene.add(moonOrbit);
+
+        const moonTexture = textureLoader.load('./img/moon.jpg');
+        const normalTexture = textureLoader.load('./img/normal.jpg');
+        const moon = new THREE.Mesh(
+            new THREE.SphereGeometry(3, 32, 32),
+            new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: normalTexture })
+        )
+        moon.position.x = 22; // 공전 반지름 (지구 중심 기준)
+        moonOrbit.add(moon);
 
         const marsTexture = textureLoader.load('./img/mars.jpg');
         const mars = new THREE.Mesh(
@@ -95,6 +99,7 @@ class App extends Component {
             // moon.rotation.x += 0.01;
             moon.rotation.y += 0.05;
             moon.rotation.z += 0.01;
+            moonOrbit.rotation.y += 0.01;
 
             earth.rotation.y += 0.005;
             mars.rotation.y += 0.005;
