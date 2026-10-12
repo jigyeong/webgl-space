@@ -7,7 +7,7 @@
 ![image](https://img.shields.io/badge/React-20232A?style=appveyor&logo=react&logoColor=61DAFB)
 ![image](https://img.shields.io/badge/HTML5-20232A.svg?&style=appveyor&logo=html5&logoColor=E34F26)
 ![image](https://img.shields.io/badge/CSS3-20232A.svg?&style=appveyor&logo=css3&logoColor=1572B6)
-![image](https://img.shields.io/badge/npm-v.6.14.14-blue?style=appveyor)
+![image](https://img.shields.io/badge/pnpm-v.10.27.0-F69220?style=appveyor)
 ![image](https://img.shields.io/badge/Made%20for-VSCode-3260a8.svg?style=appveyor)
 
 
@@ -27,6 +27,6 @@ In the project directory, you can run:
 
   
 ```sh
-npm install
-npm start
+pnpm install
+pnpm start
 ```
