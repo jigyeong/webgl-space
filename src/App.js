@@ -3,6 +3,9 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Portfolio from './Portfolio';
 
+// 포트폴리오 오버레이 표시 여부 (false 면 마우스로 우주 공간 조작 가능)
+const SHOW_PORTFOLIO = false;
+
 class App extends Component {
     componentDidMount() {
         const scene = new THREE.Scene();
@@ -121,7 +124,7 @@ class App extends Component {
     render() {
         return (
             <>
-                <Portfolio/>
+                {SHOW_PORTFOLIO && <Portfolio/>}
                 <div ref={ref => (this.mount = ref)} />
             </>
         )
