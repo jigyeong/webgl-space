@@ -92,7 +92,7 @@ class SpaceScene extends Component {
         moveCamera();
 
         // 공전 주기(초). 프레임 수가 아닌 경과 시간 기준이라 모니터 주사율과 무관
-        const MOON_ORBIT_PERIOD = 40;
+        const MOON_ORBIT_PERIOD = 180;
         const clock = new THREE.Clock();
 
         let frameId;
@@ -101,9 +101,7 @@ class SpaceScene extends Component {
             const delta = clock.getDelta();
             stars.material.uniforms.uTime.value = clock.elapsedTime;
 
-            // moon.rotation.x += 0.01;
-            moon.rotation.y += 0.05;
-            moon.rotation.z += 0.01;
+            // 달은 별도 자전 없이 공전 축과 함께 돌아 항상 같은 면이 지구를 향함 (조석 고정)
             moonOrbit.rotation.y += (Math.PI * 2 / MOON_ORBIT_PERIOD) * delta;
 
             earth.rotation.y += 0.005;
