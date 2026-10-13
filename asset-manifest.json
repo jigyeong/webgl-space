@@ -1,13 +1,18 @@
 {
   "files": {
     "main.css": "/webgl-space/static/css/main.e21b9c20.css",
-    "main.js": "/webgl-space/static/js/main.7d57fa6f.js",
+    "main.js": "/webgl-space/static/js/main.b49e0199.js",
+    "static/media/mars.jpg": "/webgl-space/static/media/mars.d08a828bc1a027f614c0.jpg",
+    "static/media/earth.jpg": "/webgl-space/static/media/earth.a0982f05a23ccb8421e4.jpg",
+    "static/media/normal.jpg": "/webgl-space/static/media/normal.573c0a93c594c41b13ab.jpg",
+    "static/media/moon.jpg": "/webgl-space/static/media/moon.a2edaf8548e78714814b.jpg",
+    "static/media/space.jpg": "/webgl-space/static/media/space.80687b0111f84fd6c97e.jpg",
     "index.html": "/webgl-space/index.html",
     "main.e21b9c20.css.map": "/webgl-space/static/css/main.e21b9c20.css.map",
-    "main.7d57fa6f.js.map": "/webgl-space/static/js/main.7d57fa6f.js.map"
+    "main.b49e0199.js.map": "/webgl-space/static/js/main.b49e0199.js.map"
   },
   "entrypoints": [
     "static/css/main.e21b9c20.css",
-    "static/js/main.7d57fa6f.js"
+    "static/js/main.b49e0199.js"
   ]
 }
