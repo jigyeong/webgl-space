@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { createStars } from './stars';
 import './SpaceScene.css';
 import earthImg from '../../assets/images/earth.jpg';
 import marsImg from '../../assets/images/mars.jpg';
@@ -66,19 +67,7 @@ class SpaceScene extends Component {
         scene.add(light);
         camera.position.z = 50;
 
-        // 별 300개를 InstancedMesh 하나로 그려 draw call 을 1회로 줄임
-        const starCount = 300;
-        const stars = new THREE.InstancedMesh(
-            new THREE.SphereGeometry(0.2, 8, 8),
-            new THREE.MeshStandardMaterial({ color: 0xFFFFFF }),
-            starCount
-        );
-        const matrix = new THREE.Matrix4();
-        for (let i = 0; i < starCount; i++) {
-            const [x, y, z] = new Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200));
-            matrix.makeTranslation(x, y, z);
-            stars.setMatrixAt(i, matrix);
-        }
+        const stars = createStars({ pixelRatio: renderer.getPixelRatio() });
         scene.add(stars);
 
         const spaceTexture = textureLoader.load(spaceImg);
@@ -109,10 +98,13 @@ class SpaceScene extends Component {
         let frameId;
         const animate = function () {
             frameId = requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            stars.material.uniforms.uTime.value = clock.elapsedTime;
+
             // moon.rotation.x += 0.01;
             moon.rotation.y += 0.05;
             moon.rotation.z += 0.01;
-            moonOrbit.rotation.y += (Math.PI * 2 / MOON_ORBIT_PERIOD) * clock.getDelta();
+            moonOrbit.rotation.y += (Math.PI * 2 / MOON_ORBIT_PERIOD) * delta;
 
             earth.rotation.y += 0.005;
             mars.rotation.y += 0.005;
