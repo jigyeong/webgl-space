@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import Portfolio from './Portfolio';
+import './SpaceScene.css';
+import earthImg from '../../assets/images/earth.jpg';
+import marsImg from '../../assets/images/mars.jpg';
+import moonImg from '../../assets/images/moon.jpg';
+import normalImg from '../../assets/images/normal.jpg';
+import spaceImg from '../../assets/images/space.jpg';
 
-// 포트폴리오 오버레이 표시 여부 (false 면 마우스로 우주 공간 조작 가능)
-const SHOW_PORTFOLIO = false;
-
-class App extends Component {
+class SpaceScene extends Component {
     componentDidMount() {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -18,7 +20,7 @@ class App extends Component {
 
         const textureLoader = new THREE.TextureLoader();
 
-        const earthTexture = textureLoader.load('./img/earth.jpg');
+        const earthTexture = textureLoader.load(earthImg);
         const earth = new THREE.Mesh(
             new THREE.SphereGeometry(12, 32, 32),
             new THREE.MeshStandardMaterial({ map: earthTexture})
@@ -40,8 +42,8 @@ class App extends Component {
         moonOrbit.rotation.y = Math.PI;
         moonOrbitTilt.add(moonOrbit);
 
-        const moonTexture = textureLoader.load('./img/moon.jpg');
-        const normalTexture = textureLoader.load('./img/normal.jpg');
+        const moonTexture = textureLoader.load(moonImg);
+        const normalTexture = textureLoader.load(normalImg);
         const moon = new THREE.Mesh(
             new THREE.SphereGeometry(3, 32, 32),
             new THREE.MeshStandardMaterial({ map: moonTexture, normalMap: normalTexture })
@@ -49,7 +51,7 @@ class App extends Component {
         moon.position.x = 22; // 공전 반지름 (지구 중심 기준)
         moonOrbit.add(moon);
 
-        const marsTexture = textureLoader.load('./img/mars.jpg');
+        const marsTexture = textureLoader.load(marsImg);
         const mars = new THREE.Mesh(
             new THREE.SphereGeometry(13, 60, 60),
             new THREE.MeshStandardMaterial({ map: marsTexture})
@@ -79,7 +81,7 @@ class App extends Component {
         }
         scene.add(stars);
 
-        const spaceTexture = textureLoader.load('./img/space.jpg');
+        const spaceTexture = textureLoader.load(spaceImg);
         scene.background = spaceTexture;
 
         function moveCamera() {
@@ -139,11 +141,8 @@ class App extends Component {
     }
     render() {
         return (
-            <>
-                {SHOW_PORTFOLIO && <Portfolio/>}
-                <div ref={ref => (this.mount = ref)} />
-            </>
+            <div ref={ref => (this.mount = ref)} />
         )
     }
 }
-export default App;
+export default SpaceScene;
