@@ -30,3 +30,7 @@ In the project directory, you can run:
 pnpm install
 pnpm start
 ```
+
+## Credits
+
+- Earth texture: [The Blue Marble](https://visibleearth.nasa.gov/images/57735) — NASA Goddard Space Flight Center Image by Reto Stöckli
