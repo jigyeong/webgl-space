@@ -29,9 +29,16 @@ class App extends Component {
         scene.add(earth);
 
         // 지구 중심에 공전 축을 두고, 축을 회전시켜 달이 지구 주위를 돌게 함
+        // 궤도면은 실제 달처럼 5.14° 기울임 (기울기 축 안에서 공전 축이 회전)
+        const moonOrbitTilt = new THREE.Object3D();
+        moonOrbitTilt.position.copy(earth.position);
+        moonOrbitTilt.rotation.z = THREE.MathUtils.degToRad(5.14);
+        scene.add(moonOrbitTilt);
+
         const moonOrbit = new THREE.Object3D();
-        moonOrbit.position.copy(earth.position);
-        scene.add(moonOrbit);
+        // 지구 왼쪽(화면 중앙 쪽)에서 출발해 지구 앞을 지나가도록 시작 각도 설정
+        moonOrbit.rotation.y = Math.PI;
+        moonOrbitTilt.add(moonOrbit);
 
         const moonTexture = textureLoader.load('./img/moon.jpg');
         const normalTexture = textureLoader.load('./img/normal.jpg');
@@ -93,13 +100,17 @@ class App extends Component {
         window.addEventListener('resize', onResize);
         moveCamera();
 
+        // 공전 주기(초). 프레임 수가 아닌 경과 시간 기준이라 모니터 주사율과 무관
+        const MOON_ORBIT_PERIOD = 40;
+        const clock = new THREE.Clock();
+
         let frameId;
         const animate = function () {
             frameId = requestAnimationFrame(animate);
             // moon.rotation.x += 0.01;
             moon.rotation.y += 0.05;
             moon.rotation.z += 0.01;
-            moonOrbit.rotation.y += 0.01;
+            moonOrbit.rotation.y += (Math.PI * 2 / MOON_ORBIT_PERIOD) * clock.getDelta();
 
             earth.rotation.y += 0.005;
             mars.rotation.y += 0.005;
